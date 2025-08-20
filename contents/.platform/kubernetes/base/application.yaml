@@ -1,0 +1,28 @@
+apiVersion: meta.p6m.dev/v1alpha1
+kind: PlatformApplication
+metadata:
+  name: {{ project-name }}
+  labels:
+    p6m.dev/app: {{ project-name }}
+spec:
+  config:{% if protocol == 'gRPC' %}
+    GRPC_PORT: "8080"  # Service Port
+    SERVER_PORT: "8081" # Management Port{% elif protocol == 'GraphQL' %}
+    SERVER_PORT: "8080" # Service Port
+    MANAGEMENT_SERVER_PORT: "8081" # Management Port{% endif %}
+    LOGGING_STRUCTURED: "true"{% if persistence == 'CockroachDB' %}{% if language == '.NET' %}
+    ConnectionStrings__CockroachDBConnection: "Host=$(crdb_{{ project_name }}_db_endpoint);Port=$(crdb_{{ project_name }}_db_port);Database={{ artifact_id }}_db;Username=$(crdb_{{ project_name }}_db_username);Password=$(crdb_{{ artifact_id }}_db_password);sslmode=require"{% else %}
+    PERSISTENCE_DATABASE_URL: "$(crdb_{{ project_name }}_jdbc_connection_string)" {% endif %}{% endif %}
+  resources: {% if persistence == 'CockroachDB' %}
+    crdb:
+      - name: {{ project-name }}{% else %}{}{% endif %}
+  deployment:
+    image: {{ project-name }}-server:latest
+    ports:
+      - protocol: {% if protocol == 'gRPC' %}grpc{% else %}http{% endif %}
+        port: 8080
+      - protocol: http
+        port: 8081
+    readinessProbe:
+      port: 8081
+      path: {% if language == '.NET' %}/health{% else %}/health/readiness{% endif%}
