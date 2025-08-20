@@ -35,17 +35,9 @@ context += prompt("Persistence:", "persistence", #{
       "PostgreSQL",
       "MySQL",
       "MSSQL",
+      "None",
     ]),
 });
-
-// if context.project_suffix == "service" {
-//   context += prompt("Persistence:", "persistence", #{
-//       type: Select(["CockroachDB", "None"]),
-//       help: "Persistence",
-//       defaults_with: "CockroachDB",
-//   });
-// }
-
 
 context += prompt("Protocol:", "protocol", #{
   type: Select([
@@ -65,19 +57,6 @@ context += prompt("Language:", "language", #{
     ".Net",
   ]),
 });
-
-// switch context["project-suffix"] {
-//     "domain-gateway" => context["service-protocol"]="GraphQL",
-//     "frontend" => context["service-protocol"]="REST",
-//     _ => context["service-protocol"]="gRPC",
-// }
-
-// let project_language = ANSWERS["project-language"];
-// if project_language == () {
-//     project_language = "Java"
-// } 
-//
-// context += set("project-language", project_language, #{});
 
 if switch_enabled("debug-context") {
     log(Info, `${archetect::archetype::description()} Context:`);

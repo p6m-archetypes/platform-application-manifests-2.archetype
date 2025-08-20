@@ -1,5 +1,5 @@
 ---
-description: "Application Manifests Archetype"
+description: "Platform Application Manifests Archetype"
 authors: ["Jimmie Fulton"]
 languages: ["YAML"]
 frameworks: ["Kubernetes"]
