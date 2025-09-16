@@ -54,7 +54,7 @@ context += prompt("Language:", "language", #{
     "JavaScript",
     "Python",
     "Golang",
-    ".Net",
+    ".NET",
   ]),
 });
 
